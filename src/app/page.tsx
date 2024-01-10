@@ -7,6 +7,8 @@ const classes = {
   wrapper: "w-full container px-4 py-10",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const recipes = await getRecipes();
 
