@@ -1,6 +1,7 @@
 import { getRecipes } from "@/actions/recipes/recipes";
 import { StyledHeader } from "@/components/atoms/StyledHeader";
 import { RecipeItem } from "./components/RecipeItem";
+export const dynamic = "force-dynamic";
 
 export default async function RecipesPage() {
   const recipes = await getRecipes();
