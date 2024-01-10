@@ -9,3 +9,60 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+enum Unit {
+  TEASPOON
+  SPOON
+  GLASS
+  PINCH
+  ML
+  L
+  G
+  KG
+  PIECE
+}
+
+model IngredientCategory {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  icon        String?
+  ingredients Ingredient[]
+  color       String
+}
+
+model Ingredient {
+  id         String              @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  categoryId String?             @db.ObjectId
+  category   IngredientCategory? @relation(fields: [categoryId], references: [id])
+}
+
+type RecipeIngredient {
+  ingredientId String
+  quantity     Float
+  unit         Unit
+}
+
+model RecipeCategory {
+  id       String           @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  color    String
+  recipes  Recipe[]         @relation(fields: [recipeId], references: [id])
+  recipeId String[]         @db.ObjectId
+  parent   RecipeCategory?  @relation("RecipeParent", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children RecipeCategory[] @relation("RecipeParent")
+  parentId String?          @db.ObjectId
+}
+
+model Recipe {
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  images          String[]
+  name            String
+  slug            String
+  ingredients     String
+  steps           String
+  macro           String
+  preparationTime String?
+  categoryIds     String[]         @db.ObjectId
+  categories      RecipeCategory[] @relation(fields: [categoryIds], references: [id])
+}

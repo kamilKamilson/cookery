@@ -1,14 +1,18 @@
-import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
 import "./globals.css";
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
+
+import type { Metadata } from "next";
+import { Montserrat } from "next/font/google";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
+import { Notifications } from "@mantine/notifications";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Cookery",
-  description: "Własna lista przepisów",
+  description: "Przepisy",
 };
 
 export default function RootLayout({
@@ -19,10 +23,14 @@ export default function RootLayout({
   return (
     <html lang="pl">
       <head>
+        <link rel="icon" type="image/png" href="/favicon.png" />
         <ColorSchemeScript />
       </head>
       <body className={montserrat.className}>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider>
+          <Notifications />
+          <ModalsProvider>{children}</ModalsProvider>
+        </MantineProvider>
       </body>
     </html>
   );

@@ -1,10 +1,23 @@
-import { Button } from "@mantine/core";
-import Image from "next/image";
+import { getRecipes } from "@/actions/recipes/recipes";
+import { Box, Center } from "@mantine/core";
+import { StyledHeader } from "../components/atoms/StyledHeader";
+import { RecipeList } from "@/components/molecules/RecipeList";
 
-export default function Home() {
+const classes = {
+  wrapper: "w-full container px-4 py-10",
+};
+
+export default async function Home() {
+  const recipes = await getRecipes();
+
   return (
-    <main>
-      <Button>siema</Button>
+    <main className={classes.main}>
+      <Center>
+        <Box className={classes.wrapper}>
+          <StyledHeader>Przepisy</StyledHeader>
+          <RecipeList data={recipes} />
+        </Box>
+      </Center>
     </main>
   );
 }
