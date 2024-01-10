@@ -20,7 +20,13 @@ export function getFontColorFromBackgroundColor(
     throw new Error("Invalid hex color code");
   }
 
-  const [r, g, b] = hexToRgb(backgroundColor);
+  const rgb = hexToRgb(backgroundColor);
+
+  if (!rgb) {
+    return "#fff";
+  }
+
+  const [r, g, b] = rgb;
 
   // Calculate luminance using relative luminance formula
   const luminance =

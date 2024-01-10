@@ -10,39 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Unit {
-  TEASPOON
-  SPOON
-  GLASS
-  PINCH
-  ML
-  L
-  G
-  KG
-  PIECE
-}
-
-model IngredientCategory {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  icon        String?
-  ingredients Ingredient[]
-  color       String
-}
-
-model Ingredient {
-  id         String              @id @default(auto()) @map("_id") @db.ObjectId
-  name       String
-  categoryId String?             @db.ObjectId
-  category   IngredientCategory? @relation(fields: [categoryId], references: [id])
-}
-
-type RecipeIngredient {
-  ingredientId String
-  quantity     Float
-  unit         Unit
-}
-
 model RecipeCategory {
   id       String           @id @default(auto()) @map("_id") @db.ObjectId
   name     String

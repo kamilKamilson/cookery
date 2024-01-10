@@ -38,13 +38,6 @@ export const Header = () => {
             href="/dashboard/recipes/categories"
           />
         </NavLink>
-        <NavLink label={texts.ingredients} leftSection={<IngredientsIcon />}>
-          <NavLink label={texts.list} href="/dashboard/ingredients" />
-          <NavLink
-            label={texts.categories}
-            href="/dashboard/ingredients/categories"
-          />
-        </NavLink>
       </Drawer>
       <Box className={classes.wrapper}>
         <Flex

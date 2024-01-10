@@ -11,7 +11,7 @@ export default async function Home() {
   const recipes = await getRecipes();
 
   return (
-    <main className={classes.main}>
+    <main>
       <Center>
         <Box className={classes.wrapper}>
           <StyledHeader>Przepisy</StyledHeader>

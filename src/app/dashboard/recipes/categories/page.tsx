@@ -126,6 +126,7 @@ export default function RecipeCategoriesPage() {
           <Flex className="flex-wrap gap-2">
             {categories.map((category) => (
               <Pill
+                key={category.id}
                 onRemove={() => openModal(category.id)}
                 withRemoveButton
                 className="font-bold uppercase"
