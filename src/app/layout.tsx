@@ -10,6 +10,7 @@ import { Notifications } from "@mantine/notifications";
 import { Header } from "@/components/organisms/Header";
 import { SessionProviderWrapper } from "@/components/providers/SessionProviderWrapper";
 import { LoginModal } from "@/components/modals/LoginModal";
+import { AddRecipeModal } from "@/components/modals/AddRecipeModal";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -52,6 +53,7 @@ export default function RootLayout({
           <ModalsProvider
             modals={{
               loginModal: LoginModal,
+              addRecipeModal: AddRecipeModal,
             }}
           >
             <SessionProviderWrapper>

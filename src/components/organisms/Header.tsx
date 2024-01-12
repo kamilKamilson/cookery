@@ -23,6 +23,14 @@ export const Header = () => {
       innerProps: {},
     });
 
+  const onAddRecipe = () =>
+    modals.openContextModal({
+      modal: "addRecipeModal",
+      title: "Dodaj przepis",
+      innerProps: {},
+      size: "lg",
+    });
+
   return (
     <header className={classes.wrapper}>
       <div className={classes.innerWrapper}>
@@ -34,7 +42,9 @@ export const Header = () => {
             height={40}
           />
         </Link>
-        {status === "authenticated" && <Button>Dodaj przepis</Button>}
+        {status === "authenticated" && (
+          <Button onClick={onAddRecipe}>Dodaj przepis</Button>
+        )}
         {status === "unauthenticated" && (
           <Button onClick={onLogin}>Zaloguj</Button>
         )}

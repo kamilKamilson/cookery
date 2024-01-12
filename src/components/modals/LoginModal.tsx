@@ -1,7 +1,7 @@
 "use client";
 
 import { ContextModalProps } from "@mantine/modals";
-import { setErrorMap, z } from "zod";
+import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PasswordInput, TextInput } from "react-hook-form-mantine";

@@ -43,7 +43,7 @@ export async function getRecipes() {
 }
 
 export async function addRecipe(
-  data: Pick<Recipe, "categoryIds" | "ingredients" | "macro" | "name" | "steps">
+  data: Pick<Recipe, "categoryId" | "ingredients" | "macro" | "name" | "steps">
 ) {
   let slug = slugify(data.name);
 
@@ -67,7 +67,7 @@ export async function addRecipe(
 
 export async function editRecipe(
   id: string,
-  data: Pick<Recipe, "categoryIds" | "ingredients" | "macro" | "name" | "steps">
+  data: Pick<Recipe, "categoryId" | "ingredients" | "macro" | "name" | "steps">
 ) {
   return await db.recipe.update({
     where: {

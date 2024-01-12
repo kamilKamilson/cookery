@@ -6,6 +6,11 @@ import { RecipeCategory } from "@prisma/client";
 export async function getCategories() {
   try {
     return await db.recipeCategory.findMany({
+      where: {
+        parentId: {
+          equals: null,
+        },
+      },
       include: {
         parent: true,
         children: true,
@@ -17,13 +22,15 @@ export async function getCategories() {
 }
 
 export async function addCategory(
-  data: Pick<RecipeCategory, "name" | "parentId" | "color">
+  data: Pick<RecipeCategory, "name" | "parentId">
 ) {
+  console.log(data);
   try {
     return await db.recipeCategory.create({
       data,
     });
   } catch (error) {
+    console.log(error);
     return false;
   }
 }
@@ -32,9 +39,7 @@ export async function removeCategory(id: string) {
   try {
     const recipesWithCategory = await db.recipe.findMany({
       where: {
-        categoryIds: {
-          has: id,
-        },
+        categoryId: id,
       },
     });
 
@@ -45,9 +50,7 @@ export async function removeCategory(id: string) {
             id: recipe.id,
           },
           data: {
-            categoryIds: {
-              set: recipe.categoryIds.filter((category) => category !== id),
-            },
+            categoryId: undefined,
           },
         });
       });
