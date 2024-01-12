@@ -7,12 +7,33 @@ import { Montserrat } from "next/font/google";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
+import { Header } from "@/components/organisms/Header";
+import { SessionProviderWrapper } from "@/components/providers/SessionProviderWrapper";
+import { LoginModal } from "@/components/modals/LoginModal";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Cookery",
   description: "Przepisy",
+};
+
+const theme = {
+  primaryColor: "beige",
+  colors: {
+    beige: [
+      "#C89D83",
+      "#C89D83",
+      "#C89D83",
+      "#C89D83",
+      "#C89D83",
+      "#C89D83",
+      "#C89D83",
+      "#C89D83",
+      "#C89D83",
+      "#C89D83",
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -27,9 +48,18 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body className={montserrat.className}>
-        <MantineProvider>
+        <MantineProvider theme={theme}>
+          <ModalsProvider
+            modals={{
+              loginModal: LoginModal,
+            }}
+          >
+            <SessionProviderWrapper>
+              <Header />
+              <main>{children}</main>
+            </SessionProviderWrapper>
+          </ModalsProvider>
           <Notifications />
-          <ModalsProvider>{children}</ModalsProvider>
         </MantineProvider>
       </body>
     </html>
