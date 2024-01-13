@@ -4,7 +4,11 @@ import "@mantine/notifications/styles.css";
 
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
-import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import {
+  ColorSchemeScript,
+  MantineProvider,
+  MantineTheme,
+} from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import { Header } from "@/components/organisms/Header";
@@ -54,7 +58,7 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body className={montserrat.variable}>
-        <MantineProvider theme={theme}>
+        <MantineProvider theme={theme as unknown as MantineTheme}>
           <ModalsProvider
             modals={{
               loginModal: LoginModal,
