@@ -29,6 +29,9 @@ const config: Config = {
       dropShadow: {
         buttonText: "0 1px 5px rgba(0, 0, 0, 0.25)",
       },
+      fontFamily: {
+        sans: ["var(--font-montserrat)"],
+      },
     },
   },
   plugins: [],

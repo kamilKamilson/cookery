@@ -1,7 +1,26 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { RecipeCategory } from "@prisma/client";
+import { Prisma, RecipeCategory } from "@prisma/client";
+import slugify from "slugify";
+
+export async function getCategory(slug: string) {
+  const category = await db.recipeCategory.findFirst({
+    where: {
+      slug,
+    },
+    include: {
+      children: {
+        include: {
+          parent: true,
+        },
+      },
+      parent: true,
+    },
+  });
+
+  return category ?? null;
+}
 
 export async function getCategories() {
   try {
@@ -27,7 +46,10 @@ export async function addCategory(
   console.log(data);
   try {
     return await db.recipeCategory.create({
-      data,
+      data: {
+        ...data,
+        slug: slugify(data.name),
+      },
     });
   } catch (error) {
     console.log(error);

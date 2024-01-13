@@ -30,7 +30,7 @@ const classes = {
 const defaultClasses = {
   wrapper:
     "rounded px-6 py-2 border-none shadow-inner relative overflow-hidden",
-  text: "font-bold lowercase drop-shadow-buttonText",
+  text: "font-bold lowercase drop-shadow-buttonText text-sm",
 
   success: twMerge(classes.state, "bg-accent-green text-white"),
   error: twMerge(classes.state, "text-white bg-accent-red"),

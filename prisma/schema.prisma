@@ -13,6 +13,7 @@ datasource db {
 model RecipeCategory {
   id       String           @id @default(auto()) @map("_id") @db.ObjectId
   name     String
+  slug     String
   parent   RecipeCategory?  @relation("RecipeParent", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   children RecipeCategory[] @relation("RecipeParent")
   parentId String?          @db.ObjectId
@@ -29,5 +30,5 @@ model Recipe {
   macro           String
   preparationTime String?
   categoryId      String         @db.ObjectId
-  categories      RecipeCategory @relation(fields: [categoryId], references: [id])
+  category        RecipeCategory @relation(fields: [categoryId], references: [id])
 }

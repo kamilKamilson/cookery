@@ -11,8 +11,13 @@ import { Header } from "@/components/organisms/Header";
 import { SessionProviderWrapper } from "@/components/providers/SessionProviderWrapper";
 import { LoginModal } from "@/components/modals/LoginModal";
 import { AddRecipeModal } from "@/components/modals/AddRecipeModal";
+import { EditRecipeModal } from "@/components/modals/EditRecipeModal";
 
-const montserrat = Montserrat({ subsets: ["latin"] });
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-montserrat",
+});
 
 export const metadata: Metadata = {
   title: "Cookery",
@@ -48,17 +53,18 @@ export default function RootLayout({
         <link rel="icon" type="image/png" href="/favicon.png" />
         <ColorSchemeScript />
       </head>
-      <body className={montserrat.className}>
+      <body className={montserrat.variable}>
         <MantineProvider theme={theme}>
           <ModalsProvider
             modals={{
               loginModal: LoginModal,
               addRecipeModal: AddRecipeModal,
+              editRecipeModal: EditRecipeModal,
             }}
           >
             <SessionProviderWrapper>
               <Header />
-              <main>{children}</main>
+              <main className="py-16">{children}</main>
             </SessionProviderWrapper>
           </ModalsProvider>
           <Notifications />

@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../atoms/Button";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 import { modals } from "@mantine/modals";
+import { IconLogout } from "@tabler/icons-react";
+import { ActionIcon } from "@mantine/core";
 
 const classes = {
   wrapper:
@@ -23,6 +24,12 @@ export const Header = () => {
       innerProps: {},
     });
 
+  const onLogout = async () => {
+    await signOut({
+      redirect: false,
+    });
+  };
+
   const onAddRecipe = () =>
     modals.openContextModal({
       modal: "addRecipeModal",
@@ -36,14 +43,25 @@ export const Header = () => {
       <div className={classes.innerWrapper}>
         <Link href={"/"} className="flex">
           <Image
-            src={"./logo.svg"}
+            src={"/logo.svg"}
             alt="Cookery Logo"
             width={142}
             height={40}
+            className="h-8 md:h-10 w-auto"
           />
         </Link>
         {status === "authenticated" && (
-          <Button onClick={onAddRecipe}>Dodaj przepis</Button>
+          <div className="flex items-center gap-4">
+            <Button onClick={onAddRecipe}>Dodaj przepis</Button>
+            <ActionIcon
+              onClick={onLogout}
+              h={36}
+              w={36}
+              className="bg-beige-dark"
+            >
+              <IconLogout />
+            </ActionIcon>
+          </div>
         )}
         {status === "unauthenticated" && (
           <Button onClick={onLogin}>Zaloguj</Button>

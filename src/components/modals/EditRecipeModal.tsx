@@ -7,8 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Select, TextInput, Textarea } from "react-hook-form-mantine";
 import { Button } from "../atoms/Button";
 import { useEffect, useState } from "react";
-import { addRecipe } from "@/actions/recipes/recipes";
-import { Prisma } from "@prisma/client";
+import { editRecipe } from "@/actions/recipes/recipes";
+import { Prisma, Recipe } from "@prisma/client";
 import { getCategories } from "@/actions/recipes/categories";
 
 const schema = z.object({
@@ -25,11 +25,13 @@ const classes = {
   form: "flex flex-col gap-4",
 };
 
-export const AddRecipeModal = ({
+export const EditRecipeModal = ({
   context,
   id,
-  innerProps,
-}: ContextModalProps) => {
+  innerProps: { recipe },
+}: ContextModalProps<{
+  recipe: Recipe;
+}>) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -44,6 +46,7 @@ export const AddRecipeModal = ({
 
   const { control, handleSubmit, reset } = useForm<Schema>({
     resolver: zodResolver(schema),
+    defaultValues: recipe,
   });
 
   const onSubmit: SubmitHandler<Schema> = async (data) => {
@@ -52,15 +55,12 @@ export const AddRecipeModal = ({
     setError(false);
 
     try {
-      await addRecipe(data);
+      const newRecipe = await editRecipe(recipe.id, data);
       setSuccess(true);
-      reset({
-        name: "",
-        categoryId: null as unknown as string,
-        steps: "",
-        ingredients: "",
-        macro: "",
-      });
+      reset(newRecipe);
+      setTimeout(() => {
+        context.closeModal(id);
+      }, 2000);
     } catch (error) {
       setError(true);
     } finally {
@@ -113,7 +113,7 @@ export const AddRecipeModal = ({
         isSuccess={success}
         isError={error}
       >
-        Dodaj przepis
+        Edytuj przepis
       </Button>
     </form>
   );
