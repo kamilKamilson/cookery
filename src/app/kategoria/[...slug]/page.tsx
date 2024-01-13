@@ -5,11 +5,10 @@ import Link from "next/link";
 import { IconChevronLeft } from "@tabler/icons-react";
 import { getRecipesByCategories } from "@/actions/recipes/recipes";
 import { notFound } from "next/navigation";
-import { RecipeItem } from "./components/RecipeItem";
+import { RecipeList } from "./components/RecipeList";
 
 const classes = {
   wrapper: "mx-auto container px-4 py-4 lg:py-10",
-  recipes: "grid grid-col-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4",
   title: "font-sans text-brown-dark text-xl md:text-2xl",
   backButton: "text-xs mb-2",
 };
@@ -50,15 +49,11 @@ export default async function CategoryPage({
         </div>
       )}
 
-      <div className={classes.recipes}>
-        {recipes.length ? (
-          recipes.map((recipe) => (
-            <RecipeItem recipe={recipe} key={recipe.id} />
-          ))
-        ) : (
-          <div>brak przepisów w tej kategorii</div>
-        )}
-      </div>
+      {recipes.length ? (
+        <RecipeList recipes={recipes} />
+      ) : (
+        <div>brak przepisów w tej kategorii</div>
+      )}
     </div>
   );
 }
