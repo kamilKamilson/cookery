@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db";
 import { Recipe } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import slugify from "slugify";
 
 export async function getRecipe(slug: string) {
@@ -11,7 +12,7 @@ export async function getRecipe(slug: string) {
         slug,
       },
       include: {
-        categories: {
+        category: {
           include: {
             parent: true,
           },
@@ -23,11 +24,40 @@ export async function getRecipe(slug: string) {
   }
 }
 
+export async function getRecipesByCategories(categoryId: string) {
+  const category = await db.recipeCategory.findFirst({
+    where: {
+      id: categoryId,
+    },
+    include: {
+      children: true,
+    },
+  });
+
+  const categoryIds = [
+    categoryId,
+    ...(category?.children.map(({ id }) => id) ?? []),
+  ];
+
+  const recipes = await db.recipe.findMany({
+    where: {
+      categoryId: {
+        in: categoryIds,
+      },
+    },
+    orderBy: {
+      name: "desc",
+    },
+  });
+
+  return recipes ?? [];
+}
+
 export async function getRecipes() {
   try {
     return await db.recipe.findMany({
       include: {
-        categories: {
+        category: {
           include: {
             parent: true,
           },
@@ -43,7 +73,7 @@ export async function getRecipes() {
 }
 
 export async function addRecipe(
-  data: Pick<Recipe, "categoryIds" | "ingredients" | "macro" | "name" | "steps">
+  data: Pick<Recipe, "categoryId" | "ingredients" | "macro" | "name" | "steps">
 ) {
   let slug = slugify(data.name);
 
@@ -57,6 +87,8 @@ export async function addRecipe(
     slug += (Math.random() + 1).toString(36).substring(7);
   }
 
+  revalidatePath("/kategoria/[...slug]", "page");
+
   return await db.recipe.create({
     data: {
       ...data,
@@ -67,9 +99,9 @@ export async function addRecipe(
 
 export async function editRecipe(
   id: string,
-  data: Pick<Recipe, "categoryIds" | "ingredients" | "macro" | "name" | "steps">
+  data: Pick<Recipe, "categoryId" | "ingredients" | "macro" | "name" | "steps">
 ) {
-  return await db.recipe.update({
+  const recipe = await db.recipe.update({
     where: {
       id,
     },
@@ -78,6 +110,9 @@ export async function editRecipe(
       slug: slugify(data.name),
     },
   });
+
+  revalidatePath("/kategoria/[...slug]", "page");
+  return recipe;
 }
 
 export async function removeRecipe(id: Recipe["id"]) {
@@ -86,4 +121,6 @@ export async function removeRecipe(id: Recipe["id"]) {
       id,
     },
   });
+
+  revalidatePath("/kategoria/[...slug]", "page");
 }

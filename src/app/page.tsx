@@ -1,25 +1,36 @@
-import { getRecipes } from "@/actions/recipes/recipes";
-import { Box, Center } from "@mantine/core";
-import { StyledHeader } from "../components/atoms/StyledHeader";
-import { RecipeList } from "@/components/molecules/RecipeList";
+import { getCategories } from "@/actions/recipes/categories";
+import { Button } from "@/components/atoms/Button";
+import {
+  Center,
+  Menu,
+  MenuDropdown,
+  MenuItem,
+  MenuTarget,
+  Stack,
+  Text,
+} from "@mantine/core";
+import { CategoryMenu } from "./components/CategoryMenu";
 
 const classes = {
-  wrapper: "w-full container px-4 py-10",
+  wrapper: "container mx-auto px-4 pt-10",
+  categories: "flex-wrap flex gap-4 justify-center items-center flex-1",
 };
 
-export const dynamic = "force-dynamic";
-
 export default async function Home() {
-  const recipes = await getRecipes();
+  const categories = await getCategories();
 
   return (
-    <main>
+    <div className={classes.wrapper}>
       <Center>
-        <Box className={classes.wrapper}>
-          <StyledHeader>Przepisy</StyledHeader>
-          <RecipeList data={recipes} />
-        </Box>
+        <Stack>
+          <Text ta={"center"}>Wybierz kategorię przepisów</Text>
+          <div className={classes.categories}>
+            {categories.map((category) => (
+              <CategoryMenu category={category} key={category.id} />
+            ))}
+          </div>
+        </Stack>
       </Center>
-    </main>
+    </div>
   );
 }
