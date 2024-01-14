@@ -39,9 +39,7 @@ export default async function RecipePage({
       >
         wróć do kategorii
       </Button>
-      <h2 order={2} className={classes.title}>
-        {recipe.name}
-      </h2>
+      <h2 className={classes.title}>{recipe.name}</h2>
       <div className={classes.macro}>{recipe.macro}</div>
       <div className={classes.details}>
         <div className="whitespace-pre">{recipe.ingredients}</div>
