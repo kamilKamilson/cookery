@@ -9,7 +9,7 @@ import { RecipeList } from "./components/RecipeList";
 
 const classes = {
   wrapper: "mx-auto container px-4 py-4 lg:py-10",
-  title: "font-sans text-brown-dark text-xl md:text-2xl",
+  title: "font-sans text-brown-dark text-xl md:text-2xl my-0",
   backButton: "text-xs mb-2",
 };
 
@@ -38,9 +38,7 @@ export default async function CategoryPage({
           wszystkie w kategorii {category.parent.name}
         </Button>
       )}
-      <Title className={classes.title} order={2}>
-        {category?.name}
-      </Title>
+      <h2 className={classes.title}>{category?.name}</h2>
       {category?.children && (
         <div className="flex gap-2 my-2">
           {category.children.map((child) => (

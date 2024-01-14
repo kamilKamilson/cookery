@@ -9,7 +9,7 @@ const classes = {
   macro: "text-sm text-beige-dark mb-4 md:mb-10 mt-2",
   details:
     "grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-10 text-sm md:text-base",
-  title: "text-xl md:text-2xl",
+  title: "text-xl md:text-2xl my-0",
 };
 
 export default async function RecipePage({
@@ -39,9 +39,9 @@ export default async function RecipePage({
       >
         wróć do kategorii
       </Button>
-      <Title order={2} className={classes.title}>
+      <h2 order={2} className={classes.title}>
         {recipe.name}
-      </Title>
+      </h2>
       <div className={classes.macro}>{recipe.macro}</div>
       <div className={classes.details}>
         <div className="whitespace-pre">{recipe.ingredients}</div>

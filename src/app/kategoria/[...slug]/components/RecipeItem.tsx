@@ -8,9 +8,10 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 const classes = {
+  title: "font-bold text-base font-sans my-0",
   recipe:
     "border border-solid border-beige/20 rounded-md shadow-sm p-4 no-underline text-brown-dark",
-  recipeMacro: "text-xs mt-1 text-beige-dark",
+  recipeMacro: "text-xs mt-1 text-beige-dark ",
 };
 export const RecipeItem = ({ recipe }: { recipe: Recipe }) => {
   const { status } = useSession();
@@ -46,8 +47,8 @@ export const RecipeItem = ({ recipe }: { recipe: Recipe }) => {
       key={recipe.id}
       className={classes.recipe}
     >
-      <Title order={5}>{recipe.name}</Title>
-      <Text className={classes.recipeMacro}>{recipe.macro}</Text>
+      <h3 className={classes.title}>{recipe.name}</h3>
+      <p className={classes.recipeMacro}>{recipe.macro}</p>
       {status === "authenticated" && (
         <ButtonGroup className="gap-4 mt-4">
           <Button fullWidth onClick={onEdit}>
