@@ -1,5 +1,5 @@
 import { getCategory } from "@/actions/recipes/categories";
-import { Box, Button, Text, Title } from "@mantine/core";
+import { Button } from "@mantine/core";
 import { SubCategoryItem } from "./components/SubCategoryItem";
 import Link from "next/link";
 import { IconChevronLeft } from "@tabler/icons-react";

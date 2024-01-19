@@ -1,6 +1,6 @@
 "use client";
 
-import { Recipe } from ".prisma/client";
+import {  Prisma} from ".prisma/client";
 import { RecipeItem } from "./RecipeItem";
 import { useState } from "react";
 import { TextInput } from "@mantine/core";
@@ -10,7 +10,11 @@ const classes = {
   list: "grid grid-col-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4",
 };
 
-export const RecipeList = ({ recipes }: { recipes: Recipe[] }) => {
+type RecipeListProps = { recipes: Prisma.RecipeGetPayload<{include: {
+  category: true
+}}>[] }
+
+export const RecipeList = ({ recipes }: RecipeListProps) => {
   const [search, setSearch] = useState("");
 
   const filteredRecipes = search

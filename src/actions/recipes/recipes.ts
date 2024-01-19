@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { Recipe } from "@prisma/client";
+import { Prisma, Recipe } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import slugify from "slugify";
 
@@ -24,7 +24,8 @@ export async function getRecipe(slug: string) {
   }
 }
 
-export async function getRecipesByCategories(categoryId: string) {
+
+export async function getRecipesByCategories(categoryId: string)  {
   const category = await db.recipeCategory.findFirst({
     where: {
       id: categoryId,
@@ -48,6 +49,9 @@ export async function getRecipesByCategories(categoryId: string) {
     orderBy: {
       name: "desc",
     },
+    include: {
+      category: true
+    }
   });
 
   return recipes ?? [];
