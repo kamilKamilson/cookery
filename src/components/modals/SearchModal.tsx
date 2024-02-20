@@ -80,6 +80,7 @@ export const SearchModal = ({}: ContextModalProps) => {
         ) : recipes.length ? (
           recipes.map((recipe) => (
             <Link
+              key={recipe.id}
               href={`/przepis/${recipe.slug}`}
               className="no-underline "
               onClick={() => modals.closeAll()}
