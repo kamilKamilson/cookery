@@ -16,6 +16,7 @@ import { SessionProviderWrapper } from "@/components/providers/SessionProviderWr
 import { LoginModal } from "@/components/modals/LoginModal";
 import { AddRecipeModal } from "@/components/modals/AddRecipeModal";
 import { EditRecipeModal } from "@/components/modals/EditRecipeModal";
+import { SearchModal } from "@/components/modals/SearchModal";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -81,6 +82,7 @@ export default function RootLayout({
         <MantineProvider theme={theme as unknown as MantineTheme}>
           <ModalsProvider
             modals={{
+              searchModal: SearchModal,
               loginModal: LoginModal,
               addRecipeModal: AddRecipeModal,
               editRecipeModal: EditRecipeModal,
