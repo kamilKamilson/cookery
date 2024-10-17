@@ -12,11 +12,8 @@ export async function getRecipe(slug: string) {
         slug,
       },
       include: {
-        category: {
-          include: {
-            parent: true,
-          },
-        },
+        categories: true,
+        tags: true
       },
     });
   } catch (error) {
@@ -26,31 +23,19 @@ export async function getRecipe(slug: string) {
 
 
 export async function getRecipesByCategories(categoryId: string)  {
-  const category = await db.recipeCategory.findFirst({
-    where: {
-      id: categoryId,
-    },
-    include: {
-      children: true,
-    },
-  });
-
-  const categoryIds = [
-    categoryId,
-    ...(category?.children.map(({ id }) => id) ?? []),
-  ];
 
   const recipes = await db.recipe.findMany({
     where: {
-      categoryId: {
-        in: categoryIds,
+      categoryIds: {
+        has: categoryId
       },
     },
     orderBy: {
       name: "desc",
     },
     include: {
-      category: true
+      categories: true,
+      tags: true
     }
   });
 
@@ -61,11 +46,7 @@ export async function getRecipes() {
   try {
     return await db.recipe.findMany({
       include: {
-        category: {
-          include: {
-            parent: true,
-          },
-        },
+        categories: true
       },
       orderBy: {
         name: "desc",
@@ -77,9 +58,11 @@ export async function getRecipes() {
 }
 
 export async function addRecipe(
-  data: Pick<Recipe, "categoryId" | "ingredients" | "macro" | "name" | "steps">
+  data: Pick<Recipe, "categoryIds" | "tagIds" | "ingredients" | "macro" | "calories" | "name" | "steps">
 ) {
   let slug = slugify(data.name);
+
+  console.log(data)
 
   const sameSlugRecipe = await db.recipe.findFirst({
     where: {
@@ -91,11 +74,21 @@ export async function addRecipe(
     slug += (Math.random() + 1).toString(36).substring(7);
   }
 
-  revalidatePath("/kategoria/[...slug]", "page");
+  revalidatePath("/kategoria/slug", "page");
 
   return await db.recipe.create({
     data: {
-      ...data,
+      name: data.name,
+      ingredients: data.ingredients,
+      macro: data.macro,
+      calories: data.calories,
+      steps: data.steps,
+      categories: {
+        connect: data.categoryIds.map(id => ({id})) 
+      },
+      tags: {
+        connect: data.tagIds.map(id => ({id}))
+      },
       slug,
     },
   });
@@ -103,20 +96,50 @@ export async function addRecipe(
 
 export async function editRecipe(
   id: string,
-  data: Pick<Recipe, "categoryId" | "ingredients" | "macro" | "name" | "steps">
+  data: Pick<Recipe, "categoryIds" | "tagIds" | "ingredients" | "macro" | "calories" | "name" | "steps">
 ) {
-  const recipe = await db.recipe.update({
+  const recipe = await db.recipe.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  await db.recipe.update({
     where: {
       id,
     },
     data: {
-      ...data,
-      slug: slugify(data.name),
+      categories: {
+        disconnect: recipe?.categoryIds.map(id =>({id}))
+      },
+      tags: {
+        disconnect: recipe?.tagIds.map(id => ({id}))
+      }
     },
   });
 
-  revalidatePath("/kategoria/[...slug]", "page");
-  return recipe;
+  const updatedRecipe = await db.recipe.update({
+    where: {
+      id,
+    },
+    data: {
+      name: data.name,
+      ingredients: data.ingredients,
+      macro: data.macro,
+      calories: data.calories,
+      steps: data.steps,
+      slug: slugify(data.name),
+      categories: {
+        connect: data.categoryIds.map(id => ({id})) 
+      },
+      tags: {
+        connect: data.tagIds.map(id => ({id}))
+      },
+    },
+  });
+
+  revalidatePath("/kategoria/slug", "page");
+  return updatedRecipe;
 }
 
 export async function removeRecipe(id: Recipe["id"]) {
@@ -126,5 +149,5 @@ export async function removeRecipe(id: Recipe["id"]) {
     },
   });
 
-  revalidatePath("/kategoria/[...slug]", "page");
+  revalidatePath("/kategoria/slug", "page");
 }

@@ -34,7 +34,7 @@ const classes = {
 export const SearchModal = ({}: ContextModalProps) => {
   const [loading, setLoading] = useState(false);
   const [recipes, setRecipes] = useState<
-    Prisma.RecipeGetPayload<{ include: { category: true } }>[]
+    Prisma.RecipeGetPayload<{ include: { categories: true; tags: true } }>[]
   >([]);
 
   const { control, handleSubmit } = useForm<Schema>({
@@ -89,8 +89,17 @@ export const SearchModal = ({}: ContextModalProps) => {
                 <Title order={6} className="text-beige-dark ">
                   {recipe.name}
                 </Title>
-                <PillGroup my="xs">
-                  <Pill>{recipe.category.name}</Pill>
+                <PillGroup>
+                  {recipe.categories.map((c) => (
+                    <Pill bg="gray" c="white" key={c.id}>
+                      {c.name}
+                    </Pill>
+                  ))}
+                </PillGroup>
+                <PillGroup className="mt-2">
+                  {recipe.tags.map((t) => (
+                    <Pill key={t.id}>{t.name}</Pill>
+                  ))}
                 </PillGroup>
                 <Text size="xs" c={"gray"} mt="xs">
                   {recipe.macro}

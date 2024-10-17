@@ -1,7 +1,15 @@
 "use client";
 
 import { removeRecipe } from "@/actions/recipes/recipes";
-import { Box, Button, ButtonGroup, Pill, PillGroup, Text, Title } from "@mantine/core";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Pill,
+  PillGroup,
+  Text,
+  Title,
+} from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { Prisma } from "@prisma/client";
 import { useSession } from "next-auth/react";
@@ -14,11 +22,14 @@ const classes = {
   recipeMacro: "text-xs mt-1 text-beige-dark ",
 };
 
-type RecipeItemProps = 
-  { recipe: Prisma.RecipeGetPayload<{include: {
-    category: true
-  }}> }
-
+type RecipeItemProps = {
+  recipe: Prisma.RecipeGetPayload<{
+    include: {
+      categories: true;
+      tags: true;
+    };
+  }>;
+};
 
 export const RecipeItem = ({ recipe }: RecipeItemProps) => {
   const { status } = useSession();
@@ -55,9 +66,19 @@ export const RecipeItem = ({ recipe }: RecipeItemProps) => {
       className={classes.recipe}
     >
       <h3 className={classes.title}>{recipe.name}</h3>
-      <p className={classes.recipeMacro}>{recipe.macro}</p>
+      <p className={classes.recipeMacro}>Kalorie: {recipe.calories}</p>
+      <p className={classes.recipeMacro}>Makro: {recipe.macro}</p>
       <PillGroup>
-        <Pill>{recipe.category.name}</Pill>
+        {recipe.categories.map((c) => (
+          <Pill bg="gray" c="white" key={c.id}>
+            {c.name}
+          </Pill>
+        ))}
+      </PillGroup>
+      <PillGroup className="mt-2">
+        {recipe.tags.map((t) => (
+          <Pill key={t.id}>{t.name}</Pill>
+        ))}
       </PillGroup>
       {status === "authenticated" && (
         <ButtonGroup className="gap-4 mt-4">

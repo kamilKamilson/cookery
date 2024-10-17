@@ -10,25 +10,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model RecipeCategory {
-  id       String           @id @default(auto()) @map("_id") @db.ObjectId
+model Category {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
   name     String
   slug     String
-  parent   RecipeCategory?  @relation("RecipeParent", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children RecipeCategory[] @relation("RecipeParent")
-  parentId String?          @db.ObjectId
-  recipes  Recipe[]
+  recipes  Recipe[] @relation(fields: [recipeId], references: [id])
+  recipeId String[] @db.ObjectId
+}
+
+model Tag {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  recipes  Recipe[] @relation(fields: [recipeId], references: [id])
+  recipeId String[] @db.ObjectId
 }
 
 model Recipe {
-  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
   images          String[]
   name            String
   slug            String
   ingredients     String
   steps           String
   macro           String
+  calories        Int
   preparationTime String?
-  categoryId      String         @db.ObjectId
-  category        RecipeCategory @relation(fields: [categoryId], references: [id])
+  categoryIds     String[]   @db.ObjectId
+  categories      Category[] @relation(fields: [categoryIds], references: [id])
+  tagIds          String[]   @db.ObjectId
+  tags            Tag[]      @relation(fields: [tagIds], references: [id])
 }
