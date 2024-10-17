@@ -4,19 +4,27 @@ import { ContextModalProps } from "@mantine/modals";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Select, TextInput, Textarea } from "react-hook-form-mantine";
+import {
+  MultiSelect,
+  NumberInput,
+  TextInput,
+  Textarea,
+} from "react-hook-form-mantine";
 import { Button } from "../atoms/Button";
 import { useEffect, useState } from "react";
 import { editRecipe } from "@/actions/recipes/recipes";
-import { Prisma, Recipe } from "@prisma/client";
+import { Category, Recipe, Tag } from "@prisma/client";
 import { getCategories } from "@/actions/recipes/categories";
+import { getTags } from "@/actions/recipes/tags";
 
 const schema = z.object({
   name: z.string(),
   ingredients: z.string(),
   steps: z.string(),
   macro: z.string(),
-  categoryId: z.string(),
+  calories: z.number().min(10),
+  categoryIds: z.array(z.string()).min(1, "Minimum jedna kategoria"),
+  tagIds: z.array(z.string()),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -35,18 +43,11 @@ export const EditRecipeModal = ({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-  const [categories, setCategories] = useState<
-    Prisma.RecipeCategoryGetPayload<{
-      include: {
-        children: true;
-        parent: true;
-      };
-    }>[]
-  >([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
 
   const { control, handleSubmit, reset } = useForm<Schema>({
     resolver: zodResolver(schema),
-    defaultValues: recipe,
   });
 
   const onSubmit: SubmitHandler<Schema> = async (data) => {
@@ -58,9 +59,6 @@ export const EditRecipeModal = ({
       const newRecipe = await editRecipe(recipe.id, data);
       setSuccess(true);
       reset(newRecipe);
-      setTimeout(() => {
-        context.closeModal(id);
-      }, 2000);
     } catch (error) {
       setError(true);
     } finally {
@@ -70,24 +68,34 @@ export const EditRecipeModal = ({
 
   useEffect(() => {
     getCategories().then(setCategories);
-  }, []);
+    getTags().then(setTags);
+    reset(recipe);
+  }, [reset, recipe]);
 
-  const categoriesData = categories.map((parentCategory) => ({
-    group: parentCategory.name,
-    items: parentCategory.children.map((category) => ({
-      label: `${parentCategory.name} - ${category.name}`,
-      value: category.id,
-    })),
+  const categoriesData = categories.map((category) => ({
+    label: category.name,
+    value: category.id,
+  }));
+
+  const tagsData = tags.map((tag) => ({
+    label: tag.name,
+    value: tag.id,
   }));
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
       <TextInput control={control} name="name" label="Nazwa" />
-      <Select
+      <MultiSelect
         control={control}
-        name="categoryId"
+        name="categoryIds"
         data={categoriesData}
-        label="Kategoria"
+        label="Kategorie"
+      />
+      <MultiSelect
+        control={control}
+        name="tagIds"
+        data={tagsData}
+        label="Tagi"
       />
       <Textarea
         control={control}
@@ -105,6 +113,7 @@ export const EditRecipeModal = ({
         name="steps"
         label="Przygotowanie"
       />
+      <NumberInput control={control} name="calories" label="Kalorie" />
       <TextInput control={control} name="macro" label="Makro" />
 
       <Button

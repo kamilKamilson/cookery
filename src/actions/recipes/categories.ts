@@ -1,21 +1,13 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { Prisma, RecipeCategory } from "@prisma/client";
+import { Category } from "@prisma/client";
 import slugify from "slugify";
 
 export async function getCategory(slug: string) {
-  const category = await db.recipeCategory.findFirst({
+  const category = await db.category.findFirst({
     where: {
       slug,
-    },
-    include: {
-      children: {
-        include: {
-          parent: true,
-        },
-      },
-      parent: true,
     },
   });
 
@@ -24,28 +16,17 @@ export async function getCategory(slug: string) {
 
 export async function getCategories() {
   try {
-    return await db.recipeCategory.findMany({
-      where: {
-        parentId: {
-          equals: null,
-        },
-      },
-      include: {
-        parent: true,
-        children: true,
-      },
-    });
+    return await db.category.findMany();
   } catch (error) {
     return [];
   }
 }
 
 export async function addCategory(
-  data: Pick<RecipeCategory, "name" | "parentId">
+  data: Pick<Category, "name">
 ) {
-  console.log(data);
   try {
-    return await db.recipeCategory.create({
+    return await db.category.create({
       data: {
         ...data,
         slug: slugify(data.name),
@@ -61,7 +42,9 @@ export async function removeCategory(id: string) {
   try {
     const recipesWithCategory = await db.recipe.findMany({
       where: {
-        categoryId: id,
+        categoryIds: {
+          has: id
+        }
       },
     });
 
@@ -72,22 +55,15 @@ export async function removeCategory(id: string) {
             id: recipe.id,
           },
           data: {
-            categoryId: undefined,
+            categories: {
+              disconnect: { id }
+            }
           },
         });
       });
     }
 
-    await db.recipeCategory.updateMany({
-      where: {
-        parentId: id,
-      },
-      data: {
-        parentId: null,
-      },
-    });
-
-    return await db.recipeCategory.delete({
+    return await db.category.delete({
       where: {
         id,
       },

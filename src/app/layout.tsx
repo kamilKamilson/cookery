@@ -14,7 +14,7 @@ import { Notifications } from "@mantine/notifications";
 import { Header } from "@/components/organisms/Header";
 import { SessionProviderWrapper } from "@/components/providers/SessionProviderWrapper";
 import { LoginModal } from "@/components/modals/LoginModal";
-import { AddRecipeModal } from "@/components/modals/AddRecipeModal";
+import { AddModal } from "@/components/modals/AddModal";
 import { EditRecipeModal } from "@/components/modals/EditRecipeModal";
 import { SearchModal } from "@/components/modals/SearchModal";
 
@@ -84,7 +84,7 @@ export default function RootLayout({
             modals={{
               searchModal: SearchModal,
               loginModal: LoginModal,
-              addRecipeModal: AddRecipeModal,
+              addModal: AddModal,
               editRecipeModal: EditRecipeModal,
             }}
           >

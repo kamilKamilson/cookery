@@ -9,7 +9,8 @@ export async function POST(request: NextRequest) {
 
   const recipes = await db.recipe.findMany({
     include: {
-      category: true,
+      categories: true,
+      tags: true
     },
   });
 

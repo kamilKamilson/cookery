@@ -34,8 +34,8 @@ export const Header = () => {
 
   const onAddRecipe = () =>
     modals.openContextModal({
-      modal: "addRecipeModal",
-      title: "Dodaj przepis",
+      modal: "addModal",
+      title: "Dodaj element",
       innerProps: {},
       size: "lg",
     });

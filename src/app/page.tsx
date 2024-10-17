@@ -2,14 +2,11 @@ import { getCategories } from "@/actions/recipes/categories";
 import { Button } from "@/components/atoms/Button";
 import {
   Center,
-  Menu,
-  MenuDropdown,
-  MenuItem,
-  MenuTarget,
   Stack,
   Text,
 } from "@mantine/core";
-import { CategoryMenu } from "./components/CategoryMenu";
+import Link from "next/link";
+import { CategoryButton } from "./components/CategoryButton";
 
 const classes = {
   wrapper: "container mx-auto px-4 pt-10",
@@ -23,11 +20,9 @@ export default async function Home() {
     <div className={classes.wrapper}>
       <Center>
         <Stack>
-          <Text ta={"center"}>Wybierz kategorię przepisów</Text>
+          <Text ta="center">Wybierz kategorię przepisów</Text>
           <div className={classes.categories}>
-            {categories.map((category) => (
-              <CategoryMenu category={category} key={category.id} />
-            ))}
+            {categories.map((category) => <CategoryButton key={category.id} data={category} />)}
           </div>
         </Stack>
       </Center>
